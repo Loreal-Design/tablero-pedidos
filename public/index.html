@@ -477,7 +477,7 @@ $("editForm").addEventListener("submit",async e=>{
   e.preventDefault();if(S.readOnly)return;
   const old=S.editId?S.pedidos.find(x=>x.id===S.editId):null;
   const datos={};F.filter(k=>k!=="fila").forEach(k=>{const v=$("e_"+k).value.trim();if(!old||(old[k]??"")!==v)datos[k]=v});
-  try{await api("POST",{id:S.editId,datos});$("dlgEdit").close();toast(S.editId?"Pedido actualizado":"Pedido agregado");cargar()}
+  try{const r=await api("POST",{id:S.editId,datos,esperado:esperado(old)});$("dlgEdit").close();toast((S.editId?"Pedido actualizado":"Pedido agregado")+donde(r,datos));cargar()}
   catch(err){writeFail(err)}
 });
 $("btnDelete").onclick=async()=>{
@@ -486,8 +486,11 @@ $("btnDelete").onclick=async()=>{
 };
 async function setStatus(id,st){
   const p=S.pedidos.find(x=>x.id===id);if(!p||S.readOnly)return;
-  try{await api("POST",{id,datos:{status:st}});toast("Status: "+st);cargar()}catch(err){writeFail(err)}
+  try{const r=await api("POST",{id,datos:{status:st},esperado:esperado(p)});toast("Status: "+st+donde(r,{status:st}));cargar()}catch(err){writeFail(err)}
 }
+// Para que el servidor confirme que la fila de la planilla sigue siendo este pedido antes de escribir.
+const esperado=p=>p&&/^fila-/.test(p.id)?{marca:p._orig?.marca??p.marca,campana:p._orig?.campana??p.campana,pedido:p._orig?.pedido??p.pedido}:null;
+const donde=(r,datos)=>{const soloFalta=Object.keys(datos).every(k=>k==="falta");return soloFalta?"":r&&r.enPlanilla?" en la planilla":" (solo en el tablero: la planilla no dejó escribir)"};
 function writeFail(err){
   if(err&&err.code==="login")return;
   showBanner("No se pudo guardar"+(err&&err.message?": "+err.message:"")+". Probá de nuevo en un momento.");
