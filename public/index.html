@@ -7,33 +7,34 @@
 <meta name="robots" content="noindex">
 <style>body{margin:0}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
 /* Layout: barra de semana arriba, alertas accionables, luego timeline por diseñador (o lista). Resumen para Teams en un modal. */
 :root{
-  --bg:#f4f6f9; --surface:#ffffff; --sunk:#eaeef4; --line:#d6dce6; --fg:#16202e; --muted:#5b6778;
-  --accent:#2446c7; --accent-soft:#e2e8fb;
-  --st-pend:#7b8799; --st-proc:#2f6fe0; --st-hoy:#e07a12; --st-tranc:#c9342b; --st-fin:#2f8f5b;
-  --warn:#b86a00; --warn-soft:#fff3dd; --crit:#c9342b; --crit-soft:#fde8e6; --ok-soft:#e3f4ea;
-  --weekend:#eef1f6; --today:#e07a12;
-  --f-display:"Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
-  --f-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --day:34px; --label:270px; --row:42px;
+  --bg:#e7e6f5; --surface:#ffffff; --sunk:#f4f3fc; --line:#e9e7f6; --fg:#1d1b3a; --muted:#8987a6;
+  --accent:#6c5ce7; --accent-soft:#eeebfe; --ink:#1d1b3a;
+  --st-pend:#a6a4c4; --st-proc:#6c5ce7; --st-hoy:#f3a03b; --st-tranc:#ef5d72; --st-fin:#41b58f;
+  --warn:#d1820f; --warn-soft:#fff3e0; --crit:#e5485f; --crit-soft:#fdeaee; --ok-soft:#e2f5ee;
+  --weekend:#f7f6fd; --today:#6c5ce7;
+  --shadow:0 8px 28px rgba(76,64,170,.08), 0 1px 3px rgba(76,64,170,.05);
+  --f-display:"Plus Jakarta Sans", system-ui, sans-serif;
+  --f-body:"Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Plus Jakarta Sans", system-ui, sans-serif;
+  --day:34px; --label:270px; --row:46px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0f141c; --surface:#171e29; --sunk:#1d2532; --line:#2c3646; --fg:#e6ebf2; --muted:#98a3b4;
-  --accent:#7d9bff; --accent-soft:#1e2a4d;
-  --st-pend:#8793a6; --st-proc:#4f8bf5; --st-hoy:#f0943a; --st-tranc:#ec5c52; --st-fin:#45b079;
-  --warn:#f2b250; --warn-soft:#33270f; --crit:#f2736a; --crit-soft:#3a1a19; --ok-soft:#15301f;
-  --weekend:#141a24; --today:#f0943a; color-scheme:dark;
+  --bg:#14132a; --surface:#1e1d3a; --sunk:#262545; --line:#302f52; --fg:#ecebfa; --muted:#a3a1c4;
+  --accent:#9d90ff; --accent-soft:#2e2a5c; --ink:#ecebfa;
+  --st-pend:#7d7ba3; --st-proc:#8e81f5; --st-hoy:#f3a03b; --st-tranc:#f27387; --st-fin:#4fc39d;
+  --warn:#f2b250; --warn-soft:#3a2d14; --crit:#f27387; --crit-soft:#3d1d2a; --ok-soft:#173a30;
+  --weekend:#1a1934; --today:#9d90ff; --shadow:0 8px 28px rgba(0,0,0,.35); color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#0f141c; --surface:#171e29; --sunk:#1d2532; --line:#2c3646; --fg:#e6ebf2; --muted:#98a3b4;
-  --accent:#7d9bff; --accent-soft:#1e2a4d;
-  --st-pend:#8793a6; --st-proc:#4f8bf5; --st-hoy:#f0943a; --st-tranc:#ec5c52; --st-fin:#45b079;
-  --warn:#f2b250; --warn-soft:#33270f; --crit:#f2736a; --crit-soft:#3a1a19; --ok-soft:#15301f;
-  --weekend:#141a24; --today:#f0943a; color-scheme:dark;
+  --bg:#14132a; --surface:#1e1d3a; --sunk:#262545; --line:#302f52; --fg:#ecebfa; --muted:#a3a1c4;
+  --accent:#9d90ff; --accent-soft:#2e2a5c; --ink:#ecebfa;
+  --st-pend:#7d7ba3; --st-proc:#8e81f5; --st-hoy:#f3a03b; --st-tranc:#f27387; --st-fin:#4fc39d;
+  --warn:#f2b250; --warn-soft:#3a2d14; --crit:#f27387; --crit-soft:#3d1d2a; --ok-soft:#173a30;
+  --weekend:#1a1934; --today:#9d90ff; --shadow:0 8px 28px rgba(0,0,0,.35); color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:14px;line-height:1.45}
@@ -176,6 +177,75 @@ dialog::backdrop{background:rgba(10,15,25,.45)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:8px;font-size:.85rem;z-index:20}
 @media (max-width:600px){.form{grid-template-columns:1fr} :root{--label:150px} h1{font-size:1.4rem}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* Identidad visual: fondo lavanda, tarjetas blancas muy redondeadas con sombra suave, acento violeta, chips de color. */
+body{font-weight:500}
+h1{font-size:1.9rem;font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.1rem;font-weight:800}
+header.top{background:var(--surface);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow);align-items:center}
+.eyebrow{color:var(--accent);letter-spacing:.06em}
+.btn{border-radius:999px;border-color:transparent;background:var(--sunk);font-weight:600;padding:9px 18px}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 35%,transparent)}
+.btn.primary:hover{color:#fff;filter:brightness(1.07)}
+.btn.dark{background:var(--ink);color:var(--surface)}
+.btn.dark:hover{color:var(--surface);filter:brightness(1.2)}
+.btn.small{padding:5px 12px}
+.banner{border-radius:16px;border:0;box-shadow:var(--shadow)}
+.stats{gap:14px}
+.stat{border:0;border-radius:20px;padding:16px 18px;box-shadow:var(--shadow);gap:6px}
+.stat .n{font-weight:800;font-size:2rem}
+.stat .l{font-weight:600}
+.stat.crit,.stat.warn,.stat.hoy{border-left:0}
+.stat:hover{border-color:transparent;transform:translateY(-2px);transition:transform .15s}
+.meter{display:block;height:5px;border-radius:999px;background:var(--sunk);overflow:hidden;margin-top:4px}
+.meter i{display:block;height:100%;border-radius:999px;background:var(--accent)}
+.stat.crit .meter i{background:var(--crit)} .stat.warn .meter i{background:var(--warn)} .stat.hoy .meter i{background:var(--st-hoy)}
+section[aria-labelledby="alertsTitle"]{background:var(--surface);border-radius:24px;padding:22px 24px;box-shadow:var(--shadow)}
+.aitem{border:0;border-radius:16px;background:var(--sunk);padding:14px 16px}
+.aitem.crit,.aitem.warn,.aitem.late{border-left:0;position:relative}
+.aitem.crit::before,.aitem.warn::before,.aitem.late::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:4px;border-radius:0 4px 4px 0;background:var(--crit)}
+.aitem.warn::before{background:var(--warn)} .aitem.late::before{background:var(--st-hoy)}
+.aitem .btn{background:var(--surface)}
+.aitem .falta{border-radius:10px;background:var(--surface);color:var(--crit);font-weight:600}
+.empty{border-radius:16px;border-color:var(--line)}
+.seg{border:0;border-radius:999px;padding:4px;gap:2px;background:var(--surface);box-shadow:var(--shadow)}
+.seg button{border-radius:999px;padding:7px 18px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.filters select,.filters input{border:0;border-radius:999px;padding:9px 16px;background:var(--surface);box-shadow:var(--shadow)}
+.showing .activo{border-radius:999px;padding:3px 10px}
+.pill{border:0;padding:3px 10px;background:color-mix(in srgb,currentColor 14%,transparent)}
+.flag{border-radius:999px;padding:2px 9px}
+.nuevo{border-radius:999px;padding:1px 8px}
+.panel{border:0;border-radius:24px;box-shadow:var(--shadow)}
+.tl-nav{border-bottom-color:var(--line);padding:14px 16px}
+.tl-weeks div{border-left-color:var(--line)}
+.tl-row{border-bottom-color:var(--sunk)}
+.tl-group .tl-lab,.tl-group .tl-fill{background:var(--surface)}
+.tl-group .tl-lab{font-weight:800;color:var(--accent)}
+.tl-lab{border-right-color:var(--line)}
+.tl-track{background-image:linear-gradient(to right,var(--sunk) 1px,transparent 1px)}
+.bar{top:12px;height:22px;border-radius:999px;padding:0 10px}
+.bar.late{outline-color:var(--crit)}
+.dl{top:12px;background:var(--ink)}
+.offl,.offr{border-radius:999px;padding:2px 8px}
+.todayline{width:2px;border-radius:2px}
+.tl-days div.td{color:#fff}
+.tl-days div.td b,.tl-days div.td{position:relative}
+.tl-days div.td::before{content:"";position:absolute;inset:0 4px 3px;border-radius:10px;background:var(--accent);z-index:-1}
+.tl-days{isolation:isolate}
+.nodl button{border:0;border-radius:999px;background:var(--sunk);padding:3px 10px}
+th{background:var(--surface);color:var(--muted)}
+tr.clk:hover td{background:var(--sunk)}
+td select{border:0;border-radius:999px;background:var(--sunk);padding:4px 10px}
+dialog{border:0;border-radius:24px;box-shadow:0 24px 60px rgba(40,30,110,.25)}
+dialog::backdrop{background:rgba(29,27,58,.35);backdrop-filter:blur(3px)}
+.form input,.form select,.form textarea{border:1px solid transparent;border-radius:12px;background:var(--sunk)}
+.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--accent);outline:none}
+.form .falta-box{border-radius:14px}
+#teamsText{border:0;border-radius:14px;background:var(--sunk)}
+.toast{border-radius:999px;background:var(--ink);color:var(--surface);padding:10px 20px}
+.mono{font-variant-numeric:tabular-nums}
+@media (max-width:600px){header.top,section[aria-labelledby="alertsTitle"]{padding:16px;border-radius:20px}}
 </style>
 
 <div class="wrap">
@@ -186,7 +256,7 @@ dialog::backdrop{background:rgba(10,15,25,.45)}
       <div class="syncline" id="syncLine"></div>
     </div>
     <div class="actions">
-      <button class="btn" id="btnTeams" type="button">Resumen para Teams</button>
+      <button class="btn dark" id="btnTeams" type="button">Resumen para Teams</button>
       <button class="btn primary" id="btnNew" type="button">+ Nuevo pedido</button>
     </div>
   </header>
@@ -339,7 +409,8 @@ function renderStats(){
     proc:all.filter(([p])=>p.status==="En proceso").length,
     fin:all.filter(([p])=>p.status==="Finalizado"&&p.finalizadoEn&&parse(p.finalizadoEn)>=WEEK0).length};
   const tiles=[["late","crit","Atrasados","alertas"],["recl","crit","Trancados: reclamar","Trancado"],["tomar","warn","Pendientes ≤ 7 días sin tomar","Pendiente"],["hoy","hoy","Para encarar hoy","Para encarar hoy"],["semana","","Entregas esta semana","activos"],["proc","","En proceso","En proceso"],["fin","","Finalizados esta semana","Finalizado"]];
-  $("stats").innerHTML=tiles.map(([k,cls,l,f])=>`<button type="button" class="stat ${cls}" data-f="${esc(f)}"><span class="n">${S.loaded?c[k]:"–"}</span><span class="l">${l}</span></button>`).join("");
+  const activos=Math.max(1,all.filter(([p,i])=>i.activo).length);
+  $("stats").innerHTML=tiles.map(([k,cls,l,f])=>`<button type="button" class="stat ${cls}" data-f="${esc(f)}"><span class="n">${S.loaded?c[k]:"–"}</span><span class="l">${l}</span><span class="meter" aria-hidden="true"><i style="width:${S.loaded?Math.min(100,Math.round(c[k]/activos*100)):0}%"></i></span></button>`).join("");
   $("stats").querySelectorAll(".stat").forEach(b=>b.onclick=()=>{S.fStatus=b.dataset.f;render();$("fStatus").scrollIntoView({behavior:"smooth",block:"center"})});
 }
 
