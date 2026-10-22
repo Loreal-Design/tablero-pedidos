@@ -572,7 +572,7 @@ async function cargar(fresca){
   try{
     const d=await api("GET",null,fresca?"?fresca=1":"");
     const antes=new Set(S.pedidos.map(p=>p.id)),nuevos=d.pedidos.filter(p=>!antes.has(p.id)).length;
-    S.pedidos=d.pedidos;S.loaded=true;S.readOnly=!d.editable;S.sync.at=d.leidaEn;S.sync.state="idle";S.sync.msg="";
+    S.pedidos=d.pedidos;S.loaded=true;S.readOnly=!d.editable;S.sync.at=d.leidaEn;S.skew=d.ahora?Date.now()-new Date(d.ahora):0;S.sync.state="idle";S.sync.msg="";
     if(!d.editable)showBanner("Falta conectar la base de datos en Vercel: por ahora el tablero es de solo lectura.");
     render();if(fresca)toast("Planilla actualizada: "+d.pedidos.length+" pedidos"+(antes.size&&nuevos?" ("+nuevos+" nuevo"+(nuevos>1?"s":"")+")":""));
   }catch(err){
@@ -587,7 +587,7 @@ async function cargar(fresca){
 function renderSync(){
   const el=$("syncLine");if(!el)return;
   const at=S.sync.at?new Date(S.sync.at):null;
-  const hace=at?Math.round((Date.now()-at)/60000):null;
+  const hace=at?Math.max(0,Math.round((Date.now()-(S.skew||0)-at)/60000)):null;
   const when=at?(hace<1?"recién":hace<60?"hace "+hace+" min":hace<1440?"hace "+Math.round(hace/60)+" h":"el "+fmt(at)):"todavía no";
   const txt=S.sync.state!=="idle"?S.sync.msg:"Planilla leída "+when+(S.loaded?" · "+S.pedidos.length+" pedidos en el tablero":"");
   el.innerHTML=`<span class="${S.sync.state==="error"?"sync-err":""}">${esc(txt)}</span>
