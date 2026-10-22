@@ -312,7 +312,7 @@ dialog::backdrop{background:rgba(29,27,58,.35);backdrop-filter:blur(3px)}
       <label>Campaña<input id="e_campana"></label>
       <label class="full">Pedido (piezas)<input id="e_pedido" required></label>
       <label>Status<select id="e_status"></select></label>
-      <label>Diseñador<input id="e_disenador" list="disList" placeholder="Sin asignar"></label>
+      <label>Diseñador<select id="e_disenador"></select></label>
       <label>Prioridad<select id="e_prioridad"></select></label>
       <label>División<input id="e_division" list="divList"></label>
       <label>Ingreso<input id="e_ingreso" type="date"></label>
@@ -339,7 +339,6 @@ dialog::backdrop{background:rgba(29,27,58,.35);backdrop-filter:blur(3px)}
   </div>
 </dialog>
 
-<datalist id="disList"></datalist>
 <dialog id="dlgLogin">
   <form class="dlg" id="loginForm">
     <div class="dlg-head"><h2>Pedidos a Diseño</h2></div>
@@ -354,6 +353,7 @@ dialog::backdrop{background:rgba(29,27,58,.35);backdrop-filter:blur(3px)}
 <script>
 const STATUSES=["Pendiente","En proceso","Para encarar hoy","Trancado","Finalizado"];
 const PRIOS=["Para hoy","Alta","Media","Baja"];
+const DISENADORES=["Aldu","Cande","Caro","Mar","Nacho"];
 const DIAS=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
 const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 const S={pedidos:[],loaded:false,view:"timeline",fDis:"",fStatus:"activos",fQ:"",weekOffset:0,col:null,readOnly:false,editId:null,expand:{}};
@@ -461,9 +461,8 @@ function renderAlerts(){
 }
 
 function renderFilters(){
-  const dis=[...new Set(S.pedidos.map(p=>p.disenador).filter(Boolean))].sort();
+  const dis=DISENADORES;
   $("fDis").innerHTML=`<option value="">Todo el equipo</option>`+dis.map(d=>`<option ${S.fDis===d?"selected":""}>${esc(d)}</option>`).join("")+`<option value="__none" ${S.fDis==="__none"?"selected":""}>Sin asignar</option>`;
-  $("disList").innerHTML=dis.map(d=>`<option>${esc(d)}</option>`).join("");
   const opts=[["activos","Activos"],["alertas","Solo con alertas"],["todos","Todos"],...STATUSES.map(s=>[s,s])];
   $("fStatus").innerHTML=opts.map(([v,l])=>`<option value="${esc(v)}" ${S.fStatus===v?"selected":""}>${esc(l)}</option>`).join("");
   $("legend").innerHTML=STATUSES.map(s=>`<span><i class="sw bar b-${slug(s)}" style="position:static"></i>${s}</span>`).join("")+
@@ -544,6 +543,8 @@ function openEdit(id,preset){
   $("editTitle").textContent=id?title(p):"Nuevo pedido";
   $("e_status").innerHTML=STATUSES.map(s=>`<option>${s}</option>`).join("");
   $("e_prioridad").innerHTML=`<option value="">—</option>`+PRIOS.map(s=>`<option>${s}</option>`).join("");
+  const otro=p.disenador&&!DISENADORES.includes(p.disenador)?[p.disenador]:[];
+  $("e_disenador").innerHTML=`<option value="">Sin asignar</option>`+[...DISENADORES,...otro].map(d=>`<option>${esc(d)}</option>`).join("");
   F.forEach(k=>{$("e_"+k).value=p[k]??""});
   if(preset)Object.entries(preset).forEach(([k,v])=>{if($("e_"+k))$("e_"+k).value=v});
   $("e_fila").disabled=true;
