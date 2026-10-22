@@ -245,7 +245,10 @@ dialog::backdrop{background:rgba(29,27,58,.35);backdrop-filter:blur(3px)}
 .form input:focus,.form select:focus,.form textarea:focus{border-color:var(--accent);outline:none}
 .form .falta-box{border-radius:14px}
 #teamsText{border:0;border-radius:14px;background:var(--sunk)}
-.toast{border-radius:999px;background:var(--ink);color:var(--surface);padding:10px 20px}
+.toast{border-radius:999px;background:var(--ink);color:var(--surface);padding:10px 20px;display:flex;align-items:center;gap:12px}
+.toast[hidden]{display:none}
+.toast-undo{border:0;background:none;color:var(--accent);font-weight:700;padding:0;cursor:pointer}
+:root[data-theme="light"] .toast-undo{color:#b3a8ff}
 .mono{font-variant-numeric:tabular-nums}
 .theme-toggle{position:relative;display:inline-flex;align-items:center;justify-content:space-between;width:112px;height:58px;padding:5px;border:0;border-radius:999px;background:var(--sunk);box-shadow:inset 0 1px 3px rgba(40,30,110,.12)}
 .theme-toggle .tt-knob{position:absolute;top:5px;left:5px;width:48px;height:48px;border-radius:50%;background:var(--surface);box-shadow:0 3px 10px rgba(60,40,160,.25);transition:transform .25s ease}
@@ -566,7 +569,7 @@ $("editForm").addEventListener("submit",async e=>{
   e.preventDefault();if(S.readOnly)return;
   const old=S.editId?S.pedidos.find(x=>x.id===S.editId):null;
   const datos={};F.filter(k=>k!=="fila").forEach(k=>{const v=$("e_"+k).value.trim();if(!old||(old[k]??"")!==v)datos[k]=v});
-  try{const r=await api("POST",{id:S.editId,datos,esperado:esperado(old)});$("dlgEdit").close();toast((S.editId?"Pedido actualizado":"Pedido agregado")+donde(r,datos));cargar()}
+  try{const r=await api("POST",{id:S.editId,datos,esperado:esperado(old)});$("dlgEdit").close();toast((S.editId?"Pedido actualizado":"Pedido agregado")+donde(r,datos),datos.status==="Finalizado"&&old?deshacerFin(old.id,old.status):null);cargar()}
   catch(err){writeFail(err)}
 });
 $("btnDelete").onclick=async()=>{
@@ -575,7 +578,7 @@ $("btnDelete").onclick=async()=>{
 };
 async function setStatus(id,st){
   const p=S.pedidos.find(x=>x.id===id);if(!p||S.readOnly)return;
-  try{const r=await api("POST",{id,datos:{status:st},esperado:esperado(p)});toast("Status: "+st+donde(r,{status:st}));cargar()}catch(err){writeFail(err)}
+  try{const r=await api("POST",{id,datos:{status:st},esperado:esperado(p)});toast("Status: "+st+donde(r,{status:st}),st==="Finalizado"?deshacerFin(id,p.status):null);cargar()}catch(err){writeFail(err)}
 }
 // Para que el servidor confirme que la fila de la planilla sigue siendo este pedido antes de escribir.
 const esperado=p=>p&&/^fila-/.test(p.id)?{marca:p._orig?.marca??p.marca,campana:p._orig?.campana??p.campana,pedido:p._orig?.pedido??p.pedido}:null;
@@ -620,7 +623,11 @@ async function copy(text,ok){
 }
 
 // ---------- UI ----------
-let tt;function toast(m){const t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2200)}
+let tt;function toast(m,deshacer){const t=$("toast");t.textContent=m;
+  if(deshacer){const b=document.createElement("button");b.type="button";b.className="toast-undo";b.textContent="Deshacer";b.onclick=()=>{t.hidden=true;deshacer()};t.append(b)}
+  t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,deshacer?8000:2200)}
+// Al finalizar un pedido se ofrece deshacer, por si fue sin querer.
+const deshacerFin=(id,prev)=>prev&&prev!=="Finalizado"?()=>setStatus(id,prev):null;
 function showBanner(m){$("banner").textContent=m;$("banner").hidden=false}
 document.addEventListener("click",e=>{
   const ed=e.target.closest("[data-edit]");if(ed){openEdit(ed.dataset.edit);return}
