@@ -7,7 +7,7 @@ Lee la hoja "2026" de la planilla "Pedidos a Diseño :)" desde el servidor y mue
 | Variable | Qué es |
 |---|---|
 | `GOOGLE_SERVICE_ACCOUNT` | El contenido completo del JSON de la cuenta de servicio de Google. La planilla tiene que estar compartida con su mail como Lector. |
-| `TEAM_PASSWORD` | Contraseña que usa el equipo para entrar. |
+| `TEAM_PASSWORD` | Opcional. Contraseña que usa el equipo para entrar; sin ella el tablero queda abierto para quien tenga el link. |
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN` | Las crea solo Vercel al agregar Upstash Redis desde Storage / Marketplace. |
 | `SHEET_ID`, `SHEET_NAME`, `MIN_FILA` | Opcionales. Por defecto la planilla actual, hoja `2026`, desde la fila 959. |
 
