@@ -571,9 +571,10 @@ async function cargar(fresca){
   S.sync.state="running";S.sync.msg="Leyendo la planilla…";renderSync();
   try{
     const d=await api("GET",null,fresca?"?fresca=1":"");
+    const antes=new Set(S.pedidos.map(p=>p.id)),nuevos=d.pedidos.filter(p=>!antes.has(p.id)).length;
     S.pedidos=d.pedidos;S.loaded=true;S.readOnly=!d.editable;S.sync.at=d.leidaEn;S.sync.state="idle";S.sync.msg="";
     if(!d.editable)showBanner("Falta conectar la base de datos en Vercel: por ahora el tablero es de solo lectura.");
-    render();if(fresca)toast("Planilla actualizada");
+    render();if(fresca)toast("Planilla actualizada: "+d.pedidos.length+" pedidos"+(antes.size&&nuevos?" ("+nuevos+" nuevo"+(nuevos>1?"s":"")+")":""));
   }catch(err){
     S.sync.state=err.code==="login"?"idle":"error";
     S.sync.msg=err.code==="api_desactivada"?"Falta habilitar la Google Sheets API en el proyecto de Google Cloud."
