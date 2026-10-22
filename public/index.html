@@ -554,7 +554,7 @@ function openEdit(id,preset){
   if(preset)Object.entries(preset).forEach(([k,v])=>{if($("e_"+k))$("e_"+k).value=v});
   $("e_fila").disabled=true;
   $("faltaBox").hidden=$("e_status").value!=="Trancado";
-  $("btnDelete").hidden=!id||!id.startsWith("x-")||S.readOnly;$("btnDelete").textContent="Eliminar";$("btnDelete").dataset.armed="";
+  $("btnDelete").hidden=!id||S.readOnly;$("btnDelete").textContent="Eliminar";$("btnDelete").dataset.armed="";
   $("btnSave").disabled=S.readOnly;
   $("dlgEdit").showModal();
 }
@@ -574,7 +574,8 @@ $("editForm").addEventListener("submit",async e=>{
 });
 $("btnDelete").onclick=async()=>{
   const b=$("btnDelete");if(!b.dataset.armed){b.dataset.armed="1";b.textContent="Confirmar: eliminar";return}
-  try{await api("DELETE",null,"?id="+encodeURIComponent(S.editId));$("dlgEdit").close();toast("Pedido eliminado");cargar()}catch(err){writeFail(err)}
+  const p=S.pedidos.find(x=>x.id===S.editId),esp=esperado(p);
+  try{await api("DELETE",null,"?id="+encodeURIComponent(S.editId)+(esp?"&esperado="+encodeURIComponent(JSON.stringify(esp)):""));$("dlgEdit").close();toast(esp?"Pedido eliminado de la planilla":"Pedido eliminado");cargar()}catch(err){writeFail(err)}
 };
 async function setStatus(id,st){
   const p=S.pedidos.find(x=>x.id===id);if(!p||S.readOnly)return;

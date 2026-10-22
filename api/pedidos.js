@@ -21,10 +21,14 @@ export default async function handler(req, res) {
     if (req.method === "POST") {
       return res.json(await guardarPedido(req.body?.id || null, req.body?.datos || {}, req.body?.esperado || null));
     }
-    if (req.method === "DELETE") { await borrarPedido(req.query.id); return res.status(204).end(); }
+    if (req.method === "DELETE") {
+      const esperado = req.query.esperado ? JSON.parse(req.query.esperado) : null;
+      await borrarPedido(req.query.id, esperado);
+      return res.status(204).end();
+    }
     res.status(405).end();
   } catch (e) {
     console.error(e);
-    res.status(e.code === "sin_acceso" || e.code === "sin_credenciales" || e.code === "google_auth" || e.code === "api_desactivada" || e.code === "google_error" ? 502 : e.code === "fila_movida" ? 409 : 400).json({ error: e.message, code: e.code || "error" });
+    res.status(e.code === "sin_acceso" || e.code === "sin_credenciales" || e.code === "google_auth" || e.code === "api_desactivada" || e.code === "google_error" ? 502 : e.code === "fila_movida" ? 409 : e.code === "sin_permiso_escritura" ? 403 : 400).json({ error: e.message, code: e.code || "error" });
   }
 }
