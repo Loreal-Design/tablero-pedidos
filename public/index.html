@@ -576,8 +576,9 @@ async function cargar(fresca){
     render();if(fresca)toast("Planilla actualizada");
   }catch(err){
     S.sync.state=err.code==="login"?"idle":"error";
-    S.sync.msg=err.code==="sin_acceso"?"La cuenta de servicio no tiene acceso a la planilla: compartila con ese mail como Lector."
-      :err.code==="sin_credenciales"||err.code==="google_auth"?"Falta configurar la cuenta de servicio de Google en Vercel."
+    S.sync.msg=err.code==="api_desactivada"?"Falta habilitar la Google Sheets API en el proyecto de Google Cloud."
+      :err.code==="sin_acceso"?"La cuenta de servicio no tiene acceso a la planilla: compartila con ese mail como Lector."
+      :err.code==="sin_credenciales"||err.code==="google_auth"?"Falta configurar bien la cuenta de servicio de Google en Vercel"+(err.message?" ("+err.message+")":"")+"."
       :"No se pudo leer la planilla"+(err.message?" ("+err.message+")":"")+". Probá de nuevo en un rato.";
   }
   renderSync();

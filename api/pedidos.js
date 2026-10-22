@@ -15,6 +15,6 @@ export default async function handler(req, res) {
     res.status(405).end();
   } catch (e) {
     console.error(e);
-    res.status(e.code === "sin_acceso" || e.code === "sin_credenciales" || e.code === "google_auth" ? 502 : 400).json({ error: e.message, code: e.code || "error" });
+    res.status(e.code === "sin_acceso" || e.code === "sin_credenciales" || e.code === "google_auth" || e.code === "api_desactivada" || e.code === "google_error" ? 502 : 400).json({ error: e.message, code: e.code || "error" });
   }
 }
